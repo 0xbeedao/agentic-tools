@@ -1,0 +1,204 @@
+#!/usr/bin/env rad
+
+args:
+    target_dir str = "~/.factory/"  # Target directory for sync
+    dry_run bool = false            # Preview without making changes
+    confirm_all bool = false         # Skip prompts, use defaults
+    force_new_copy bool = false      # Auto-copy missing items without prompt
+
+// Helper function to expand tilde path
+fn expand_path(path):
+    code, result = $`echo {path}`
+    if code != 0:
+        error("Failed to expand path: {path}")
+    // Remove trailing newline from shell output
+    return result.trim()
+
+// Helper function to get modification time as Unix timestamp
+fn get_mod_time(filepath):
+    code, stat = $`stat -c %Y {filepath}`
+    if code != 0:
+        error("Failed to get modification time for: {filepath}")
+    return stat.trim().parse_int()
+
+//Helper function to copy file/directory
+fn copy_item(src, dst, dry_run):
+    src_expanded = expand_path(src)
+    dst_expanded = expand_path(dst)
+    
+    if dry_run:
+        print("[DRY RUN] Would copy: {src} -> {dst}")
+    else:
+        // Create target directory if it doesn't exist
+        $`mkdir -p {dst_expanded}`
+        // Copy the item (directory or file)
+        $`cp -r {src_expanded} {dst_expanded}`
+        print("Copied: {src} -> {dst}")
+
+// Helper function to delete file/directory
+fn delete_item(path, dry_run):
+    path_expanded = expand_path(path)
+    
+    if dry_run:
+        print("[DRY RUN] Would delete: {path}")
+    else:
+        $`rm -rf {path_expanded}`
+        print("Deleted: {path}")
+
+// Helper function to get list of items in directory
+fn list_directory(path):
+    expanded = expand_path(path)
+    code, result = $`ls -1 {expanded} 2>/dev/null | sort`
+    if code != 0 or result.trim() == "":
+        return []
+    return result.trim().split("\n")
+
+// Sync a single directory type
+fn sync_directory(dir_type, source_root, target_root, dry_run, confirm_all, force_new_copy):
+    print("\n=== Syncing {dir_type} ===")
+    
+    source_dir = "{source_root}/{dir_type}"
+    target_dir = "{target_root}/{dir_type}"
+    
+    // Get items from both directories
+    source_items = list_directory(source_dir)
+    target_items = list_directory(target_dir)
+    
+    // Track stats
+    stats = {copied: 0, skipped: 0, deleted: 0}
+    
+    // Create a set of all items
+    all_items = source_items + target_items
+    all_items = all_items.unique().sort()
+    
+    for item in all_items:
+        if item == "":
+            continue
+            
+        source_path = "{source_dir}/{item}"
+        target_path = "{target_dir}/{item}"
+        
+        // Check if item exists in source and target
+        in_source = item in source_items
+        in_target = item in target_items
+
+        in_both = in_source and in_target
+        only_in_source = in_source and not in_target
+        only_in_target = not in_source and in_target
+        
+        if only_in_source:
+            print("New item: {item}")
+            //  Item only in source - copy to target
+            if confirm_all or (not force_new_copy and input("Copy to target? [Y/n]: ") != "n"):
+                copy_item(source_path, target_dir, dry_run)
+                stats.copied = stats.copied + 1
+            else:
+                print("Skipped: {item}")
+                stats.skipped = stats.skipped + 1
+                
+        else if only_in_target:
+            print("Missing from source: {item}")
+            // Item only in target - ask what to do
+            if confirm_all:
+                choice = "skip"
+            else:
+                choice = pick(["delete", "skip", "keep"], prompt="Action?")
+                
+            if choice == "delete":
+                delete_item(target_path, dry_run)
+                stats.deleted = stats.deleted + 1
+            else if choice == "skip":
+                print("Skipped: {item}")
+                stats.skipped = stats.skipped + 1
+            else if choice == "keep":
+                print("Keeping in target: {item}")
+        else:
+            // Item in both - compare modification times
+            source_time = get_mod_time(source_path)
+            target_time = get_mod_time(target_path)
+            
+            if source_time == target_time:
+                // Same modification time - skip
+                continue
+
+            // Determine which is newer
+            if source_time > target_time:
+                code, source_date = $`date -d @{source_time}`.trim()
+                if code != 0:
+                    error("Failed to format date for source time: {source_time}")
+                    continue
+                code, target_date = $`date -d @{target_time}`.trim()
+                if code != 0:
+                    error("Failed to format date for target time: {target_time}")
+                    continue
+                newer = "source"
+                default_choice = "target"  // Default to older
+                print("Conflict: {item}")
+                print("  Source: {source_date}")
+                print("  Target: {target_date}")
+                print("  Source is newer")
+            else:
+                source_date = $`date -d @{source_time}`.trim()
+                if code != 0:
+                    error("Failed to format date for source time: {source_time}")
+                    continue
+                code, target_date = $`date -d @{target_time}`.trim()
+                if code != 0:
+                    error("Failed to format date for target time: {target_time}")
+                    continue
+
+                newer = "target"
+                default_choice = "source"  // Default to older
+                print("Conflict: {item}")
+                print("  Source: {source_date}")
+                print("  Target: {target_date}")
+                print("  Target is newer")
+            
+            if confirm_all:
+                choice = default_choice
+            else:
+                choice = pick(["source", "target", "skip"], prompt="Copy from?", default = default_choice)
+            
+            if choice == "source":
+                copy_item(source_path, target_dir, dry_run)
+                stats.copied = stats.copied + 1
+                delete_item(target_path, dry_run)  // Remove old version first
+            else if choice == "target":
+                copy_item(target_path, source_dir, dry_run)
+                stats.copied = stats.copied + 1
+                delete_item(source_path, dry_run)  // Remove old version first
+            else:
+                print("Skipped: {item}")
+                stats.skipped = stats.skipped + 1
+    
+    print("\n{dir_type} stats: {stats.copied} copied, {stats.skipped} skipped, {stats.deleted} deleted")
+    return stats
+
+// Main sync logic
+code, source_root = $`pwd`.trim()
+if code != 0:
+    error("Failed to get current working directory")
+target_root = expand_path(target_dir)
+
+print("Syncing from: {source_root}")
+print("Syncing to:   {target_root}")
+if dry_run:
+    print("*** DRY RUN MODE - No changes will be made ***")
+
+total_stats = {"copied": 0, "skipped": 0, "deleted": 0}
+
+// Sync each directory type
+dirs_to_sync = ["commands", "droids", "skills"]
+for dir_type in dirs_to_sync:
+    stats = sync_directory(dir_type, source_root, target_root, dry_run, confirm_all, force_new_copy)
+    total_stats.copied = total_stats.copied + stats.copied
+    total_stats.skipped = total_stats.skipped + stats.skipped
+    total_stats.deleted = total_stats.deleted + stats.deleted
+
+// Print summary
+print("\n=== Summary ===")
+print("Total copied:  {total_stats.copied}")
+print("Total skipped: {total_stats.skipped}")
+print("Total deleted: {total_stats.deleted}")
+if dry_run:
+    print("\nRun without --dry-run to apply changes.")
