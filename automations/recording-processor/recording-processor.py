@@ -7,7 +7,6 @@ import time
 import tempfile
 import subprocess
 from pathlib import Path
-
 import click
 
 try:
@@ -149,7 +148,7 @@ def transcribe(
 )
 @click.option(
     "--model",
-    default="openrouter/x-ai/grok-4-fast",
+    default="gpt-5.2",
     help="LLM model ID for categorization",
 )
 @click.option(
