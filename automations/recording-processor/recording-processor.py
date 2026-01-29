@@ -1,4 +1,3 @@
-import argparse
 import datetime
 import hashlib
 import json
@@ -9,9 +8,11 @@ import tempfile
 import subprocess
 from pathlib import Path
 
+import click
+
 try:
     import tomllib
-except ModuleNotFoundError:  # pragma: no cover - compatibility for older Python
+except ModuleNotFoundError:
     tomllib = None
 
 
@@ -42,119 +43,144 @@ def _load_config(path: Path) -> dict:
     return normalized
 
 
-def _build_recording_transcribe_parser(defaults: dict) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="recording-transcribe",
-        description="Transcribe recordings into structured text outputs.",
-    )
-    parser.add_argument(
-        "--input", default=defaults.get("input"), help="Audio/video file or directory"
-    )
-    parser.add_argument(
-        "--output", default=defaults.get("output"), help="Output directory"
-    )
-    parser.add_argument(
-        "--whisper-model", default=defaults.get("whisper_model", "base")
-    )
-    parser.add_argument("--language", default=defaults.get("language"))
-    parser.add_argument(
-        "--device",
-        default=defaults.get("device", "auto"),
-        choices=["cpu", "cuda", "auto"],
-    )
-    parser.add_argument(
-        "--emit",
-        default=defaults.get("emit", "bundle"),
-        choices=["bundle", "txt", "srt", "all"],
-    )
-    parser.add_argument(
-        "--chunk-tokens",
-        default=defaults.get("chunk_tokens", 1000),
-        type=int,
-    )
-    parser.add_argument(
-        "--chunk-overlap",
-        default=defaults.get("chunk_overlap", 100),
-        type=int,
-    )
-    parser.add_argument(
-        "--overwrite", action="store_true", default=defaults.get("overwrite", False)
-    )
-    parser.add_argument(
-        "--batch-mode",
-        default=defaults.get("batch_mode", "sequential"),
-        choices=["sequential", "parallel"],
-    )
-    parser.add_argument("--config", help="Path to JSON or TOML config file")
-    parser.add_argument(
-        "--check-ffmpeg",
-        action="store_true",
-        default=defaults.get("check_ffmpeg", False),
-    )
-    return parser
+@click.group()
+def cli():
+    pass
 
 
-def _parse_recording_transcribe_args(argv: list[str] | None) -> argparse.Namespace:
-    config_parser = argparse.ArgumentParser(add_help=False)
-    config_parser.add_argument("--config")
-    config_args, _ = config_parser.parse_known_args(argv)
+@click.command("transcribe")
+@click.option("--input", default=None, help="Audio/video file or directory")
+@click.option("--output", default=None, help="Output directory")
+@click.option("--whisper-model", default="base", help="Whisper model to use")
+@click.option("--language", default=None, help="Language code (e.g., en, es)")
+@click.option(
+    "--device",
+    default="auto",
+    type=click.Choice(["cpu", "cuda", "auto"]),
+    help="Device to use for inference",
+)
+@click.option(
+    "--emit",
+    default="bundle",
+    type=click.Choice(["bundle", "txt", "srt", "all"]),
+    help="Output format to emit",
+)
+@click.option("--chunk-tokens", default=1000, type=int, help="Target tokens per chunk")
+@click.option(
+    "--chunk-overlap", default=100, type=int, help="Overlap tokens between chunks"
+)
+@click.option(
+    "--overwrite", is_flag=True, default=False, help="Overwrite existing output files"
+)
+@click.option(
+    "--batch-mode",
+    default="sequential",
+    type=click.Choice(["sequential", "parallel"]),
+    help="Batch processing mode",
+)
+@click.option("--config", default=None, help="Path to JSON or TOML config file")
+@click.option(
+    "--check-ffmpeg", is_flag=True, default=False, help="Check if ffmpeg is available"
+)
+def transcribe(
+    input,
+    output,
+    whisper_model,
+    language,
+    device,
+    emit,
+    chunk_tokens,
+    chunk_overlap,
+    overwrite,
+    batch_mode,
+    config,
+    check_ffmpeg,
+):
+    defaults = {}
+    if config:
+        defaults = _load_config(Path(config))
 
-    defaults: dict = {}
-    if config_args.config:
-        defaults = _load_config(Path(config_args.config))
+    input = input or defaults.get("input")
+    output = output or defaults.get("output")
+    whisper_model = whisper_model or defaults.get("whisper_model", "base")
+    language = language or defaults.get("language")
+    device = device or defaults.get("device", "auto")
+    emit = emit or defaults.get("emit", "bundle")
+    chunk_tokens = chunk_tokens or defaults.get("chunk_tokens", 1000)
+    chunk_overlap = chunk_overlap or defaults.get("chunk_overlap", 100)
+    overwrite = overwrite or defaults.get("overwrite", False)
+    batch_mode = batch_mode or defaults.get("batch_mode", "sequential")
+    check_ffmpeg = check_ffmpeg or defaults.get("check_ffmpeg", False)
 
-    parser = _build_recording_transcribe_parser(defaults)
-    args = parser.parse_args(argv)
+    if not input:
+        click.echo("Error: --input is required (or provide it via --config).", err=True)
+        raise click.Abort()
 
-    if not args.input:
-        parser.error("--input is required (or provide it via --config).")
+    class Args:
+        def __init__(self):
+            self.input = input
+            self.output = output
+            self.whisper_model = whisper_model
+            self.language = language
+            self.device = device
+            self.emit = emit
+            self.chunk_tokens = chunk_tokens
+            self.chunk_overlap = chunk_overlap
+            self.overwrite = overwrite
+            self.batch_mode = batch_mode
+            self.check_ffmpeg = check_ffmpeg
 
-    return args
-
-
-def _build_recording_categorize_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="recording-categorize",
-        description="Categorize transcript chunks into a daily summary.",
-    )
-    parser.add_argument(
-        "--input",
-        required=True,
-        help="Directory containing chunks.jsonl",
-    )
-    parser.add_argument(
-        "--output",
-        help="Output markdown file (default: daily-summary-YYYY-MM-DD.md)",
-    )
-    parser.add_argument(
-        "--categories",
-        default='["Project Notes","Ideas","Todos","Journal"]',
-        help="JSON array of category names",
-    )
-    parser.add_argument(
-        "--model",
-        default="openrouter/x-ai/grok-4-fast",
-        help="LLM model ID for categorization",
-    )
-    parser.add_argument(
-        "--dedupe",
-        action="store_true",
-        help="Skip chunks already categorized (hash-based)",
-    )
-    parser.add_argument(
-        "--progress",
-        action="store_true",
-        help="Show progress for long runs",
-    )
-    return parser
+    args = Args()
+    result = run_recording_transcribe(args)
+    raise SystemExit(result)
 
 
-def _parse_recording_categorize_args(argv: list[str] | None) -> argparse.Namespace:
-    parser = _build_recording_categorize_parser()
-    return parser.parse_args(argv)
+@click.command("categorize")
+@click.option("--input", required=True, help="Directory containing chunks.jsonl")
+@click.option(
+    "--output",
+    default=None,
+    help="Output markdown file (default: daily-summary-YYYY-MM-DD.md)",
+)
+@click.option(
+    "--categories",
+    default='["Project Notes","Ideas","Todos","Journal"]',
+    help="JSON array of category names",
+)
+@click.option(
+    "--model",
+    default="openrouter/x-ai/grok-4-fast",
+    help="LLM model ID for categorization",
+)
+@click.option(
+    "--dedupe",
+    is_flag=True,
+    default=False,
+    help="Skip chunks already categorized (hash-based)",
+)
+@click.option(
+    "--progress", is_flag=True, default=False, help="Show progress for long runs"
+)
+def categorize(input, output, categories, model, dedupe, progress):
+    class Args:
+        def __init__(self):
+            self.input = input
+            self.output = output
+            self.categories = categories
+            self.model = model
+            self.dedupe = dedupe
+            self.progress = progress
+
+    args = Args()
+    result = run_recording_categorize(args)
+    raise SystemExit(result)
 
 
-def run_recording_transcribe(args: argparse.Namespace) -> int:
+cli.add_command(transcribe)
+cli.add_command(categorize)
+
+
+def run_recording_transcribe(args) -> int:
     input_path = Path(args.input).expanduser()
     output_root = _resolve_output_root(input_path, args.output)
     output_root.mkdir(parents=True, exist_ok=True)
@@ -168,7 +194,7 @@ def run_recording_transcribe(args: argparse.Namespace) -> int:
             raise FileNotFoundError(f"No files found in directory: {input_path}")
         results = []
         for path in sorted(input_files):
-            output_dir = output_root / path.stem
+            output_dir = output_root / _get_transcription_name(path)
             output_dir.mkdir(parents=True, exist_ok=True)
             results.append(_transcribe_single_file(path, output_dir, args))
         return 0 if all(code == 0 for code in results) else 1
@@ -177,7 +203,7 @@ def run_recording_transcribe(args: argparse.Namespace) -> int:
         raise FileNotFoundError(f"Input not found: {input_path}")
 
     if input_path.is_file():
-        output_dir = output_root
+        output_dir = output_root / _get_transcription_name(input_path)
         output_dir.mkdir(parents=True, exist_ok=True)
         return _transcribe_single_file(input_path, output_dir, args)
 
@@ -192,17 +218,24 @@ def _resolve_output_root(input_path: Path, output_arg: str | None) -> Path:
     return input_path.parent
 
 
+def _get_transcription_name(path: Path) -> str:
+    stat = path.stat()
+    creation_time = stat.st_mtime
+    dt = datetime.datetime.fromtimestamp(creation_time)
+    return f"transcription-{dt.strftime('%Y-%m-%d-%H%M%S')}"
+
+
 def _transcribe_single_file(
     source_path: Path,
     output_dir: Path,
-    args: argparse.Namespace,
+    args,
 ) -> int:
     outputs = _build_output_paths(output_dir)
     if not args.overwrite:
         existing = [path for path in outputs.values() if path.exists()]
         if existing:
             raise FileExistsError(
-                "Outputs already exist. Use --overwrite to replace them."
+                f"Outputs already exist {existing}. Use --overwrite to replace them."
             )
 
     try:
@@ -220,6 +253,7 @@ def _transcribe_single_file(
             temp_audio = _extract_audio(source_path)
             source_for_transcribe = temp_audio
 
+        click.echo(f"Processing: {source_path}")
         model = WhisperModel(args.whisper_model, device=args.device)
         segments_iter, info = model.transcribe(
             str(source_for_transcribe),
@@ -567,7 +601,7 @@ def _append_to_markdown_section(path: Path, category: str, bullet: str) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def run_recording_categorize(args: argparse.Namespace) -> int:
+def run_recording_categorize(args) -> int:
     input_path = Path(args.input).expanduser()
     if input_path.is_file():
         chunks_path = input_path
@@ -661,19 +695,5 @@ def _emit_progress(
     print(message, end=end_char, file=sys.stderr, flush=True)
 
 
-def recording_transcribe_main(argv: list[str] | None = None) -> int:
-    args = _parse_recording_transcribe_args(argv)
-    return run_recording_transcribe(args)
-
-
-def recording_categorize_main(argv: list[str] | None = None) -> int:
-    args = _parse_recording_categorize_args(argv)
-    return run_recording_categorize(args)
-
-
-def main() -> int:
-    return recording_transcribe_main()
-
-
 if __name__ == "__main__":
-    raise SystemExit(main())
+    cli()
