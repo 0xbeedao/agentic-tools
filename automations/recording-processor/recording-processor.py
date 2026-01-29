@@ -603,15 +603,24 @@ def _append_to_markdown_section(path: Path, category: str, bullet: str) -> None:
 
 def run_recording_categorize(args) -> int:
     input_path = Path(args.input).expanduser()
-    if input_path.is_file():
-        chunks_path = input_path
-        input_dir = input_path.parent
-    else:
-        input_dir = input_path
-        chunks_path = input_dir / "chunks.jsonl"
+    chunks_paths = []
+    input_dir = input_path
 
-    if not chunks_path.exists():
-        raise FileNotFoundError(f"chunks.jsonl not found: {chunks_path}")
+    if input_path.is_file():
+        chunks_paths.append(input_path)
+        input_dir = input_path.parent
+    elif input_path.is_dir():
+        for subdir in input_path.iterdir():
+            if subdir.is_dir():
+                chunks_file = subdir / "chunks.jsonl"
+                if chunks_file.exists():
+                    chunks_paths.append(chunks_file)
+        if not chunks_paths:
+            raise FileNotFoundError(
+                f"No chunks.jsonl files found in subdirectories of {input_path}"
+            )
+    else:
+        raise FileNotFoundError(f"Input not found: {input_path}")
 
     categories = _load_categories(args.categories)
     output_path = (
@@ -628,45 +637,58 @@ def run_recording_categorize(args) -> int:
         ) from exc
 
     model = llm.get_model(args.model)
-    chunks = _load_chunks(chunks_path)
+    chunks_per_file = []
+    total_chunks = 0
+    for chunks_path in chunks_paths:
+        file_chunks = _load_chunks(chunks_path)
+        chunks_per_file.append((chunks_path, file_chunks))
+        total_chunks += len(file_chunks)
 
     dedupe_hashes: set[str] = set()
     if args.dedupe:
         dedupe_hashes = _load_dedupe_hashes(_dedupe_path(input_dir))
 
-    total = len(chunks)
+    total = total_chunks
     processed = 0
-    for index, chunk in enumerate(chunks, start=1):
-        chunk_hash = _chunk_hash(chunk)
-        if args.dedupe and chunk_hash in dedupe_hashes:
-            continue
+    current_file_index = 0
+    total_files = len(chunks_paths)
 
-        prompt = (
-            "Pick exactly one category from the list and respond with only the label.\n"
-            f"Categories: {', '.join(categories)}\n\n"
-            f"Chunk:\n{chunk.get('text', '').strip()}"
+    for chunks_path, chunks_in_file in chunks_per_file:
+        current_file_index += 1
+        click.echo(
+            f"Processing file {current_file_index}/{total_files}: {chunks_path.parent.name}"
         )
-        response = model.prompt(prompt)
-        response_text = (
-            response.text()
-            if hasattr(response, "text") and callable(response.text)
-            else getattr(response, "text", str(response))
-        )
-        category = _extract_category(str(response_text), categories)
+        for index, chunk in enumerate(chunks_in_file, start=1):
+            chunk_hash = _chunk_hash(chunk)
+            if args.dedupe and chunk_hash in dedupe_hashes:
+                continue
 
-        start = _format_hhmmss(chunk.get("start"))
-        end = _format_hhmmss(chunk.get("end"))
-        chunk_id = chunk.get("id", "chunk")
-        text = chunk.get("text", "").strip()
-        bullet = f"- [{chunk_id} {start}-{end}] {text}"
-        _append_to_markdown_section(output_path, category, bullet)
+            prompt = (
+                "Pick exactly one category from the list and respond with only the label.\n"
+                f"Categories: {', '.join(categories)}\n\n"
+                f"Chunk:\n{chunk.get('text', '').strip()}"
+            )
+            response = model.prompt(prompt)
+            response_text = (
+                response.text()
+                if hasattr(response, "text") and callable(response.text)
+                else getattr(response, "text", str(response))
+            )
+            category = _extract_category(str(response_text), categories)
 
-        if args.dedupe:
-            dedupe_hashes.add(chunk_hash)
+            start = _format_hhmmss(chunk.get("start"))
+            end = _format_hhmmss(chunk.get("end"))
+            chunk_id = chunk.get("id", "chunk")
+            text = chunk.get("text", "").strip()
+            bullet = f"- [{chunk_id} {start}-{end}] {text}"
+            _append_to_markdown_section(output_path, category, bullet)
 
-        processed += 1
-        if args.progress:
-            print(f"Processed {processed}/{total}", end="\r", file=sys.stderr)
+            if args.dedupe:
+                dedupe_hashes.add(chunk_hash)
+
+            processed += 1
+            if args.progress:
+                print(f"Processed {processed}/{total}", end="\r", file=sys.stderr)
 
     if args.progress and total > 0:
         print(" " * 30, end="\r", file=sys.stderr)
