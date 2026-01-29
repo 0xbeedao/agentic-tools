@@ -1,6 +1,4 @@
-.history/**
-.agents/**
-.python-version
+/cache
 *.pyc
 __pycache__/**
 .env
