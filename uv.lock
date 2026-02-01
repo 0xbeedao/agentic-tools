@@ -10,6 +10,7 @@ dependencies = [
     { name = "click" },
     { name = "faster-whisper" },
     { name = "llm" },
+    { name = "llm-openrouter" },
 ]
 
 [package.metadata]
@@ -17,6 +18,7 @@ requires-dist = [
     { name = "click", specifier = ">=8.3.1" },
     { name = "faster-whisper", specifier = ">=1.2.1" },
     { name = "llm", specifier = ">=0.28" },
+    { name = "llm-openrouter", specifier = ">=0.5" },
 ]
 
 [[package]]
@@ -329,6 +331,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cb/91/5071c6e0e7eabbf3a95870a4b2ec0fc585e0d4d57532d305d08d6595f8a3/llm-0.28.tar.gz", hash = "sha256:e3d8bcc0f016fae8aeca1d702491a1891523702983459cb66afec99d74cabfc1", size = 85022, upload-time = "2025-12-12T20:05:30.448Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/9f/b22de67c44c8fdac517889feb6f45a90cbc2783f71c70ea9e2614e815126/llm-0.28-py3-none-any.whl", hash = "sha256:7d70c22f2dbfe47123a67328eea9c25add8f0a3c6a439f7d452219edf2e4dd76", size = 82559, upload-time = "2025-12-12T20:05:29.173Z" },
+]
+
+[[package]]
+name = "llm-openrouter"
+version = "0.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "llm" },
+    { name = "openai" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/36/bd3fd40317982b4405a855f236582ca5f7834f8bf42b004b328bb31514bc/llm_openrouter-0.5.tar.gz", hash = "sha256:9edc30cb104ab482ab55cd6922715860405a2900e8b51190facf0b7747051a7b", size = 12934, upload-time = "2025-09-20T23:44:22.239Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c9/3c/3f4cc507dfb3ef6639b5e25db22aee7a51372c461cfe7d4bccb4d4ac7e92/llm_openrouter-0.5-py3-none-any.whl", hash = "sha256:293b74486ccac3763706baeabde82886625503bd1d5f86ba09fda33016eda3c7", size = 12211, upload-time = "2025-09-20T23:44:20.933Z" },
 ]
 
 [[package]]

@@ -1,0 +1,387 @@
+Default: openrouter/openai/gpt-4.1-mini
+OpenAI Chat: chatgpt-4o-latest (aliases: chatgpt-4o)
+OpenAI Chat: gpt-3.5-turbo-16k (aliases: chatgpt-16k, 3.5-16k)
+OpenAI Chat: gpt-3.5-turbo (aliases: 3.5, chatgpt)
+OpenAI Chat: gpt-4-0125-preview
+OpenAI Chat: gpt-4-1106-preview
+OpenAI Chat: gpt-4.1 (aliases: 4.1)
+OpenAI Chat: gpt-4.1-mini (aliases: 4.1-mini)
+OpenAI Chat: gpt-4.1-nano (aliases: 4.1-nano)
+OpenAI Chat: gpt-4-32k (aliases: 4-32k)
+OpenAI Chat: gpt-4.5-preview-2025-02-27
+OpenAI Chat: gpt-4.5-preview (aliases: gpt-4.5)
+OpenAI Chat: gpt-4 (aliases: 4, gpt4)
+OpenAI Chat: gpt-4o (aliases: 4o)
+OpenAI Chat: gpt-4o-audio-preview
+OpenAI Chat: gpt-4o-audio-preview-2024-10-01
+OpenAI Chat: gpt-4o-audio-preview-2024-12-17
+OpenAI Chat: gpt-4o-mini (aliases: 4o-mini)
+OpenAI Chat: gpt-4o-mini-audio-preview
+OpenAI Chat: gpt-4o-mini-audio-preview-2024-12-17
+OpenAI Chat: gpt-4-turbo-2024-04-09
+OpenAI Chat: gpt-4-turbo (aliases: gpt-4-turbo-preview, 4-turbo, 4t)
+OpenAI Chat: gpt-5
+OpenAI Chat: gpt-5.1
+OpenAI Chat: gpt-5.1-chat-latest
+OpenAI Chat: gpt-5.2
+OpenAI Chat: gpt-5-2025-08-07
+OpenAI Chat: gpt-5.2-chat-latest
+OpenAI Chat: gpt-5-mini
+OpenAI Chat: gpt-5-mini-2025-08-07
+OpenAI Chat: gpt-5-nano
+OpenAI Chat: gpt-5-nano-2025-08-07
+OpenAI Chat: o1
+OpenAI Chat: o1-2024-12-17
+OpenAI Chat: o1-mini
+OpenAI Chat: o1-preview
+OpenAI Chat: o3
+OpenAI Chat: o3-mini
+OpenAI Chat: o4-mini
+OpenAI Completion: gpt-3.5-turbo-instruct (aliases: 3.5-instruct, chatgpt-instruct)
+OpenRouter: openrouter/ai21/jamba-large-1.7
+OpenRouter: openrouter/ai21/jamba-mini-1.7
+OpenRouter: openrouter/aion-labs/aion-1.0
+OpenRouter: openrouter/aion-labs/aion-1.0-mini
+OpenRouter: openrouter/aion-labs/aion-rp-llama-3.1-8b
+OpenRouter: openrouter/alfredpros/codellama-7b-instruct-solidity
+OpenRouter: openrouter/alibaba/tongyi-deepresearch-30b-a3b
+OpenRouter: openrouter/allenai/molmo-2-8b:free
+OpenRouter: openrouter/allenai/olmo-2-0325-32b-instruct
+OpenRouter: openrouter/allenai/olmo-3.1-32b-instruct
+OpenRouter: openrouter/allenai/olmo-3.1-32b-think
+OpenRouter: openrouter/allenai/olmo-3-32b-think
+OpenRouter: openrouter/allenai/olmo-3-7b-instruct
+OpenRouter: openrouter/allenai/olmo-3-7b-think
+OpenRouter: openrouter/alpindale/goliath-120b
+OpenRouter: openrouter/amazon/nova-2-lite-v1
+OpenRouter: openrouter/amazon/nova-lite-v1
+OpenRouter: openrouter/amazon/nova-micro-v1
+OpenRouter: openrouter/amazon/nova-premier-v1
+OpenRouter: openrouter/amazon/nova-pro-v1
+OpenRouter: openrouter/anthracite-org/magnum-v4-72b
+OpenRouter: openrouter/anthropic/claude-3.5-haiku
+OpenRouter: openrouter/anthropic/claude-3.5-sonnet
+OpenRouter: openrouter/anthropic/claude-3.7-sonnet
+OpenRouter: openrouter/anthropic/claude-3.7-sonnet:thinking
+OpenRouter: openrouter/anthropic/claude-3-haiku
+OpenRouter: openrouter/anthropic/claude-haiku-4.5
+OpenRouter: openrouter/anthropic/claude-opus-4
+OpenRouter: openrouter/anthropic/claude-opus-4.1
+OpenRouter: openrouter/anthropic/claude-opus-4.5
+OpenRouter: openrouter/anthropic/claude-sonnet-4
+OpenRouter: openrouter/anthropic/claude-sonnet-4.5
+OpenRouter: openrouter/arcee-ai/coder-large
+OpenRouter: openrouter/arcee-ai/maestro-reasoning
+OpenRouter: openrouter/arcee-ai/spotlight
+OpenRouter: openrouter/arcee-ai/trinity-large-preview:free
+OpenRouter: openrouter/arcee-ai/trinity-mini
+OpenRouter: openrouter/arcee-ai/trinity-mini:free
+OpenRouter: openrouter/arcee-ai/virtuoso-large
+OpenRouter: openrouter/baidu/ernie-4.5-21b-a3b
+OpenRouter: openrouter/baidu/ernie-4.5-21b-a3b-thinking
+OpenRouter: openrouter/baidu/ernie-4.5-300b-a47b
+OpenRouter: openrouter/baidu/ernie-4.5-vl-28b-a3b
+OpenRouter: openrouter/baidu/ernie-4.5-vl-424b-a47b
+OpenRouter: openrouter/bytedance-seed/seed-1.6
+OpenRouter: openrouter/bytedance-seed/seed-1.6-flash
+OpenRouter: openrouter/bytedance/ui-tars-1.5-7b
+OpenRouter: openrouter/cognitivecomputations/dolphin-mistral-24b-venice-edition:free
+OpenRouter: openrouter/cohere/command-a
+OpenRouter: openrouter/cohere/command-r-08-2024
+OpenRouter: openrouter/cohere/command-r7b-12-2024
+OpenRouter: openrouter/cohere/command-r-plus-08-2024
+OpenRouter: openrouter/deepcogito/cogito-v2.1-671b
+OpenRouter: openrouter/deepcogito/cogito-v2-preview-llama-109b-moe
+OpenRouter: openrouter/deepcogito/cogito-v2-preview-llama-405b
+OpenRouter: openrouter/deepcogito/cogito-v2-preview-llama-70b
+OpenRouter: openrouter/deepseek/deepseek-chat
+OpenRouter: openrouter/deepseek/deepseek-chat-v3-0324 (aliases: deepseek)
+OpenRouter: openrouter/deepseek/deepseek-chat-v3.1
+OpenRouter: openrouter/deepseek/deepseek-r1
+OpenRouter: openrouter/deepseek/deepseek-r1-0528
+OpenRouter: openrouter/deepseek/deepseek-r1-0528:free
+OpenRouter: openrouter/deepseek/deepseek-r1-distill-llama-70b
+OpenRouter: openrouter/deepseek/deepseek-r1-distill-qwen-32b
+OpenRouter: openrouter/deepseek/deepseek-v3.1-terminus
+OpenRouter: openrouter/deepseek/deepseek-v3.1-terminus:exacto
+OpenRouter: openrouter/deepseek/deepseek-v3.2
+OpenRouter: openrouter/deepseek/deepseek-v3.2-exp
+OpenRouter: openrouter/deepseek/deepseek-v3.2-speciale
+OpenRouter: openrouter/eleutherai/llemma_7b
+OpenRouter: openrouter/essentialai/rnj-1-instruct
+OpenRouter: openrouter/google/gemini-2.0-flash-001
+OpenRouter: openrouter/google/gemini-2.0-flash-lite-001
+OpenRouter: openrouter/google/gemini-2.5-flash
+OpenRouter: openrouter/google/gemini-2.5-flash-image
+OpenRouter: openrouter/google/gemini-2.5-flash-lite
+OpenRouter: openrouter/google/gemini-2.5-flash-lite-preview-09-2025
+OpenRouter: openrouter/google/gemini-2.5-flash-preview-09-2025
+OpenRouter: openrouter/google/gemini-2.5-pro
+OpenRouter: openrouter/google/gemini-2.5-pro-preview
+OpenRouter: openrouter/google/gemini-2.5-pro-preview-05-06
+OpenRouter: openrouter/google/gemini-3-flash-preview
+OpenRouter: openrouter/google/gemini-3-pro-image-preview
+OpenRouter: openrouter/google/gemini-3-pro-preview
+OpenRouter: openrouter/google/gemma-2-27b-it
+OpenRouter: openrouter/google/gemma-2-9b-it
+OpenRouter: openrouter/google/gemma-3-12b-it
+OpenRouter: openrouter/google/gemma-3-12b-it:free
+OpenRouter: openrouter/google/gemma-3-27b-it
+OpenRouter: openrouter/google/gemma-3-27b-it:free
+OpenRouter: openrouter/google/gemma-3-4b-it
+OpenRouter: openrouter/google/gemma-3-4b-it:free
+OpenRouter: openrouter/google/gemma-3n-e2b-it:free
+OpenRouter: openrouter/google/gemma-3n-e4b-it
+OpenRouter: openrouter/google/gemma-3n-e4b-it:free
+OpenRouter: openrouter/gryphe/mythomax-l2-13b
+OpenRouter: openrouter/ibm-granite/granite-4.0-h-micro
+OpenRouter: openrouter/inception/mercury
+OpenRouter: openrouter/inception/mercury-coder
+OpenRouter: openrouter/inflection/inflection-3-pi
+OpenRouter: openrouter/inflection/inflection-3-productivity
+OpenRouter: openrouter/kwaipilot/kat-coder-pro
+OpenRouter: openrouter/liquid/lfm-2.2-6b
+OpenRouter: openrouter/liquid/lfm-2.5-1.2b-instruct:free
+OpenRouter: openrouter/liquid/lfm-2.5-1.2b-thinking:free
+OpenRouter: openrouter/liquid/lfm2-8b-a1b
+OpenRouter: openrouter/mancer/weaver
+OpenRouter: openrouter/meituan/longcat-flash-chat
+OpenRouter: openrouter/meta-llama/llama-3.1-405b
+OpenRouter: openrouter/meta-llama/llama-3.1-405b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.1-405b-instruct:free
+OpenRouter: openrouter/meta-llama/llama-3.1-70b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.1-8b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.2-11b-vision-instruct
+OpenRouter: openrouter/meta-llama/llama-3.2-1b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.2-3b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.2-3b-instruct:free
+OpenRouter: openrouter/meta-llama/llama-3.3-70b-instruct
+OpenRouter: openrouter/meta-llama/llama-3.3-70b-instruct:free
+OpenRouter: openrouter/meta-llama/llama-3-70b-instruct
+OpenRouter: openrouter/meta-llama/llama-3-8b-instruct
+OpenRouter: openrouter/meta-llama/llama-4-maverick (aliases: ll4-maverick)
+OpenRouter: openrouter/meta-llama/llama-4-scout (aliases: ll4-scout)
+OpenRouter: openrouter/meta-llama/llama-guard-2-8b
+OpenRouter: openrouter/meta-llama/llama-guard-3-8b
+OpenRouter: openrouter/meta-llama/llama-guard-4-12b
+OpenRouter: openrouter/microsoft/phi-4
+OpenRouter: openrouter/microsoft/wizardlm-2-8x22b
+OpenRouter: openrouter/minimax/minimax-01
+OpenRouter: openrouter/minimax/minimax-m1
+OpenRouter: openrouter/minimax/minimax-m2
+OpenRouter: openrouter/minimax/minimax-m2.1
+OpenRouter: openrouter/minimax/minimax-m2-her
+OpenRouter: openrouter/mistralai/codestral-2508
+OpenRouter: openrouter/mistralai/devstral-2512
+OpenRouter: openrouter/mistralai/devstral-medium
+OpenRouter: openrouter/mistralai/devstral-small
+OpenRouter: openrouter/mistralai/ministral-14b-2512
+OpenRouter: openrouter/mistralai/ministral-3b
+OpenRouter: openrouter/mistralai/ministral-3b-2512
+OpenRouter: openrouter/mistralai/ministral-8b
+OpenRouter: openrouter/mistralai/ministral-8b-2512
+OpenRouter: openrouter/mistralai/mistral-7b-instruct
+OpenRouter: openrouter/mistralai/mistral-7b-instruct-v0.1
+OpenRouter: openrouter/mistralai/mistral-7b-instruct-v0.2
+OpenRouter: openrouter/mistralai/mistral-7b-instruct-v0.3
+OpenRouter: openrouter/mistralai/mistral-large
+OpenRouter: openrouter/mistralai/mistral-large-2407
+OpenRouter: openrouter/mistralai/mistral-large-2411
+OpenRouter: openrouter/mistralai/mistral-large-2512
+OpenRouter: openrouter/mistralai/mistral-medium-3
+OpenRouter: openrouter/mistralai/mistral-medium-3.1
+OpenRouter: openrouter/mistralai/mistral-nemo
+OpenRouter: openrouter/mistralai/mistral-saba
+OpenRouter: openrouter/mistralai/mistral-small-24b-instruct-2501
+OpenRouter: openrouter/mistralai/mistral-small-3.1-24b-instruct
+OpenRouter: openrouter/mistralai/mistral-small-3.1-24b-instruct:free
+OpenRouter: openrouter/mistralai/mistral-small-3.2-24b-instruct
+OpenRouter: openrouter/mistralai/mistral-small-creative
+OpenRouter: openrouter/mistralai/mistral-tiny
+OpenRouter: openrouter/mistralai/mixtral-8x22b-instruct
+OpenRouter: openrouter/mistralai/mixtral-8x7b-instruct
+OpenRouter: openrouter/mistralai/pixtral-12b
+OpenRouter: openrouter/mistralai/pixtral-large-2411
+OpenRouter: openrouter/mistralai/voxtral-small-24b-2507
+OpenRouter: openrouter/moonshotai/kimi-dev-72b
+OpenRouter: openrouter/moonshotai/kimi-k2
+OpenRouter: openrouter/moonshotai/kimi-k2-0905
+OpenRouter: openrouter/moonshotai/kimi-k2-0905:exacto
+OpenRouter: openrouter/moonshotai/kimi-k2.5
+OpenRouter: openrouter/moonshotai/kimi-k2:free
+OpenRouter: openrouter/moonshotai/kimi-k2-thinking
+OpenRouter: openrouter/morph/morph-v3-fast
+OpenRouter: openrouter/morph/morph-v3-large
+OpenRouter: openrouter/neversleep/llama-3.1-lumimaid-8b
+OpenRouter: openrouter/neversleep/noromaid-20b
+OpenRouter: openrouter/nex-agi/deepseek-v3.1-nex-n1
+OpenRouter: openrouter/nousresearch/deephermes-3-mistral-24b-preview
+OpenRouter: openrouter/nousresearch/hermes-2-pro-llama-3-8b
+OpenRouter: openrouter/nousresearch/hermes-3-llama-3.1-405b
+OpenRouter: openrouter/nousresearch/hermes-3-llama-3.1-405b:free
+OpenRouter: openrouter/nousresearch/hermes-3-llama-3.1-70b
+OpenRouter: openrouter/nousresearch/hermes-4-405b
+OpenRouter: openrouter/nousresearch/hermes-4-70b
+OpenRouter: openrouter/nvidia/llama-3.1-nemotron-70b-instruct
+OpenRouter: openrouter/nvidia/llama-3.1-nemotron-ultra-253b-v1
+OpenRouter: openrouter/nvidia/llama-3.3-nemotron-super-49b-v1.5
+OpenRouter: openrouter/nvidia/nemotron-3-nano-30b-a3b
+OpenRouter: openrouter/nvidia/nemotron-3-nano-30b-a3b:free
+OpenRouter: openrouter/nvidia/nemotron-nano-12b-v2-vl
+OpenRouter: openrouter/nvidia/nemotron-nano-12b-v2-vl:free
+OpenRouter: openrouter/nvidia/nemotron-nano-9b-v2
+OpenRouter: openrouter/nvidia/nemotron-nano-9b-v2:free
+OpenRouter: openrouter/openai/chatgpt-4o-latest
+OpenRouter: openrouter/openai/gpt-3.5-turbo
+OpenRouter: openrouter/openai/gpt-3.5-turbo-0613
+OpenRouter: openrouter/openai/gpt-3.5-turbo-16k
+OpenRouter: openrouter/openai/gpt-3.5-turbo-instruct
+OpenRouter: openrouter/openai/gpt-4
+OpenRouter: openrouter/openai/gpt-4-0314
+OpenRouter: openrouter/openai/gpt-4-1106-preview
+OpenRouter: openrouter/openai/gpt-4.1 (aliases: 4.1)
+OpenRouter: openrouter/openai/gpt-4.1-mini (aliases: 4.1-mini)
+OpenRouter: openrouter/openai/gpt-4.1-nano
+OpenRouter: openrouter/openai/gpt-4o
+OpenRouter: openrouter/openai/gpt-4o-2024-05-13
+OpenRouter: openrouter/openai/gpt-4o-2024-08-06
+OpenRouter: openrouter/openai/gpt-4o-2024-11-20
+OpenRouter: openrouter/openai/gpt-4o-audio-preview
+OpenRouter: openrouter/openai/gpt-4o:extended
+OpenRouter: openrouter/openai/gpt-4o-mini-2024-07-18
+OpenRouter: openrouter/openai/gpt-4o-mini (aliases: open-4o-mini)
+OpenRouter: openrouter/openai/gpt-4o-mini-search-preview
+OpenRouter: openrouter/openai/gpt-4o-search-preview
+OpenRouter: openrouter/openai/gpt-4-turbo
+OpenRouter: openrouter/openai/gpt-4-turbo-preview
+OpenRouter: openrouter/openai/gpt-5
+OpenRouter: openrouter/openai/gpt-5.1
+OpenRouter: openrouter/openai/gpt-5.1-chat
+OpenRouter: openrouter/openai/gpt-5.1-codex
+OpenRouter: openrouter/openai/gpt-5.1-codex-max
+OpenRouter: openrouter/openai/gpt-5.1-codex-mini
+OpenRouter: openrouter/openai/gpt-5.2
+OpenRouter: openrouter/openai/gpt-5.2-chat
+OpenRouter: openrouter/openai/gpt-5.2-codex
+OpenRouter: openrouter/openai/gpt-5.2-pro
+OpenRouter: openrouter/openai/gpt-5-chat
+OpenRouter: openrouter/openai/gpt-5-codex
+OpenRouter: openrouter/openai/gpt-5-image
+OpenRouter: openrouter/openai/gpt-5-image-mini
+OpenRouter: openrouter/openai/gpt-5-mini
+OpenRouter: openrouter/openai/gpt-5-nano
+OpenRouter: openrouter/openai/gpt-5-pro
+OpenRouter: openrouter/openai/gpt-audio
+OpenRouter: openrouter/openai/gpt-audio-mini
+OpenRouter: openrouter/openai/gpt-oss-120b
+OpenRouter: openrouter/openai/gpt-oss-120b:exacto
+OpenRouter: openrouter/openai/gpt-oss-120b:free
+OpenRouter: openrouter/openai/gpt-oss-20b
+OpenRouter: openrouter/openai/gpt-oss-20b:free
+OpenRouter: openrouter/openai/gpt-oss-safeguard-20b
+OpenRouter: openrouter/openai/o1
+OpenRouter: openrouter/openai/o1-pro
+OpenRouter: openrouter/openai/o3
+OpenRouter: openrouter/openai/o3-deep-research
+OpenRouter: openrouter/openai/o3-mini
+OpenRouter: openrouter/openai/o3-mini-high
+OpenRouter: openrouter/openai/o3-pro
+OpenRouter: openrouter/openai/o4-mini
+OpenRouter: openrouter/openai/o4-mini-deep-research
+OpenRouter: openrouter/openai/o4-mini-high
+OpenRouter: openrouter/opengvlab/internvl3-78b
+OpenRouter: openrouter/openrouter/auto
+OpenRouter: openrouter/openrouter/bodybuilder
+OpenRouter: openrouter/openrouter/free
+OpenRouter: openrouter/perplexity/sonar
+OpenRouter: openrouter/perplexity/sonar-deep-research
+OpenRouter: openrouter/perplexity/sonar-pro
+OpenRouter: openrouter/perplexity/sonar-pro-search
+OpenRouter: openrouter/perplexity/sonar-reasoning-pro
+OpenRouter: openrouter/prime-intellect/intellect-3
+OpenRouter: openrouter/qwen/qwen-2.5-72b-instruct
+OpenRouter: openrouter/qwen/qwen-2.5-7b-instruct
+OpenRouter: openrouter/qwen/qwen-2.5-coder-32b-instruct
+OpenRouter: openrouter/qwen/qwen2.5-coder-7b-instruct
+OpenRouter: openrouter/qwen/qwen2.5-vl-32b-instruct
+OpenRouter: openrouter/qwen/qwen2.5-vl-72b-instruct
+OpenRouter: openrouter/qwen/qwen-2.5-vl-7b-instruct
+OpenRouter: openrouter/qwen/qwen-2.5-vl-7b-instruct:free
+OpenRouter: openrouter/qwen/qwen3-14b
+OpenRouter: openrouter/qwen/qwen3-235b-a22b
+OpenRouter: openrouter/qwen/qwen3-235b-a22b-2507
+OpenRouter: openrouter/qwen/qwen3-235b-a22b-thinking-2507
+OpenRouter: openrouter/qwen/qwen3-30b-a3b
+OpenRouter: openrouter/qwen/qwen3-30b-a3b-instruct-2507
+OpenRouter: openrouter/qwen/qwen3-30b-a3b-thinking-2507
+OpenRouter: openrouter/qwen/qwen3-32b
+OpenRouter: openrouter/qwen/qwen3-4b:free
+OpenRouter: openrouter/qwen/qwen3-8b
+OpenRouter: openrouter/qwen/qwen3-coder
+OpenRouter: openrouter/qwen/qwen3-coder-30b-a3b-instruct
+OpenRouter: openrouter/qwen/qwen3-coder:exacto
+OpenRouter: openrouter/qwen/qwen3-coder-flash
+OpenRouter: openrouter/qwen/qwen3-coder:free
+OpenRouter: openrouter/qwen/qwen3-coder-plus
+OpenRouter: openrouter/qwen/qwen3-max
+OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-instruct
+OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-instruct:free
+OpenRouter: openrouter/qwen/qwen3-next-80b-a3b-thinking
+OpenRouter: openrouter/qwen/qwen3-vl-235b-a22b-instruct
+OpenRouter: openrouter/qwen/qwen3-vl-235b-a22b-thinking
+OpenRouter: openrouter/qwen/qwen3-vl-30b-a3b-instruct
+OpenRouter: openrouter/qwen/qwen3-vl-30b-a3b-thinking
+OpenRouter: openrouter/qwen/qwen3-vl-32b-instruct
+OpenRouter: openrouter/qwen/qwen3-vl-8b-instruct
+OpenRouter: openrouter/qwen/qwen3-vl-8b-thinking
+OpenRouter: openrouter/qwen/qwen-max (aliases: qwen)
+OpenRouter: openrouter/qwen/qwen-plus
+OpenRouter: openrouter/qwen/qwen-plus-2025-07-28
+OpenRouter: openrouter/qwen/qwen-plus-2025-07-28:thinking
+OpenRouter: openrouter/qwen/qwen-turbo
+OpenRouter: openrouter/qwen/qwen-vl-max
+OpenRouter: openrouter/qwen/qwen-vl-plus
+OpenRouter: openrouter/qwen/qwq-32b
+OpenRouter: openrouter/raifle/sorcererlm-8x22b
+OpenRouter: openrouter/relace/relace-apply-3
+OpenRouter: openrouter/relace/relace-search
+OpenRouter: openrouter/sao10k/l3.1-70b-hanami-x1
+OpenRouter: openrouter/sao10k/l3.1-euryale-70b
+OpenRouter: openrouter/sao10k/l3.3-euryale-70b
+OpenRouter: openrouter/sao10k/l3-euryale-70b
+OpenRouter: openrouter/sao10k/l3-lunaris-8b
+OpenRouter: openrouter/stepfun-ai/step3
+OpenRouter: openrouter/switchpoint/router
+OpenRouter: openrouter/tencent/hunyuan-a13b-instruct
+OpenRouter: openrouter/thedrummer/cydonia-24b-v4.1
+OpenRouter: openrouter/thedrummer/rocinante-12b
+OpenRouter: openrouter/thedrummer/skyfall-36b-v2
+OpenRouter: openrouter/thedrummer/unslopnemo-12b
+OpenRouter: openrouter/tngtech/deepseek-r1t2-chimera
+OpenRouter: openrouter/tngtech/deepseek-r1t2-chimera:free
+OpenRouter: openrouter/tngtech/deepseek-r1t-chimera
+OpenRouter: openrouter/tngtech/deepseek-r1t-chimera:free
+OpenRouter: openrouter/tngtech/tng-r1t-chimera
+OpenRouter: openrouter/tngtech/tng-r1t-chimera:free
+OpenRouter: openrouter/undi95/remm-slerp-l2-13b
+OpenRouter: openrouter/upstage/solar-pro-3:free
+OpenRouter: openrouter/writer/palmyra-x5
+OpenRouter: openrouter/x-ai/grok-3 (aliases: grok-3)
+OpenRouter: openrouter/x-ai/grok-3-beta (aliases: grok3)
+OpenRouter: openrouter/x-ai/grok-3-mini (aliases: grok-3-mini)
+OpenRouter: openrouter/x-ai/grok-3-mini-beta (aliases: grok3-mini)
+OpenRouter: openrouter/x-ai/grok-4
+OpenRouter: openrouter/x-ai/grok-4.1-fast
+OpenRouter: openrouter/x-ai/grok-4-fast (aliases: grok4fast)
+OpenRouter: openrouter/x-ai/grok-code-fast-1
+OpenRouter: openrouter/xiaomi/mimo-v2-flash
+OpenRouter: openrouter/z-ai/glm-4-32b
+OpenRouter: openrouter/z-ai/glm-4.5
+OpenRouter: openrouter/z-ai/glm-4.5-air
+OpenRouter: openrouter/z-ai/glm-4.5-air:free
+OpenRouter: openrouter/z-ai/glm-4.5v
+OpenRouter: openrouter/z-ai/glm-4.6
+OpenRouter: openrouter/z-ai/glm-4.6:exacto
+OpenRouter: openrouter/z-ai/glm-4.6v
+OpenRouter: openrouter/z-ai/glm-4.7
+OpenRouter: openrouter/z-ai/glm-4.7-flash
