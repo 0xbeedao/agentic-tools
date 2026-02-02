@@ -37,6 +37,19 @@ def _iter_markdown_files(root: Path) -> list[Path]:
     return sorted(results)
 
 
+def _get_markdown_files(target: Path) -> list[Path]:
+    """Get markdown files from target (file or directory)."""
+    if target.is_file():
+        suffix = target.suffix.lower()
+        if suffix not in {".md", ".markdown"}:
+            raise click.ClickException(f"File must be a markdown file: {target}")
+        return [target]
+    elif target.is_dir():
+        return _iter_markdown_files(target)
+    else:
+        raise click.ClickException(f"Target is not a file or directory: {target}")
+
+
 def _split_frontmatter(text: str) -> tuple[list[str] | None, str]:
     lines = text.splitlines()
     if not lines:
@@ -299,8 +312,11 @@ def _ensure_frontmatter(
 
 
 @click.command()
-@click.argument(
-    "directory", type=click.Path(path_type=Path, exists=True, file_okay=False)
+@click.option(
+    "--path", "-p",
+    type=click.Path(path_type=Path, exists=True),
+    required=True,
+    help="Path to a markdown file or directory containing markdown files",
 )
 @click.option(
     "--model",
@@ -322,10 +338,10 @@ def _ensure_frontmatter(
     "--verbose", is_flag=True, default=False, help="Print each processed file"
 )
 def cli(
-    directory: Path, model: str, max_chars: int, dry_run: bool, verbose: bool
+    path: Path, model: str, max_chars: int, dry_run: bool, verbose: bool
 ) -> None:
-    root = directory.expanduser().resolve()
-    paths = _iter_markdown_files(root)
+    target = path.expanduser().resolve()
+    paths = _get_markdown_files(target)
 
     changed_count = 0
     llm_count = 0
