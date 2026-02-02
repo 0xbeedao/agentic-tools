@@ -9,7 +9,9 @@ dependencies = [
     "faster-whisper>=1.2.1",
     "llm>=0.28",
     "llm-openrouter>=0.5",
+    "pyyaml>=6.0",
 ]
 
 [project.scripts]
 recording-processor = "recording_recording_processor:cli"
+toc-generator = "automations.toc_generator.toc_generator:main"
