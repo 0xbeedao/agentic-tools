@@ -5,12 +5,13 @@ requires-python = "==3.12.12"
 [[package]]
 name = "agentic-tools"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "faster-whisper" },
     { name = "llm" },
     { name = "llm-openrouter" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
@@ -19,6 +20,7 @@ requires-dist = [
     { name = "faster-whisper", specifier = ">=1.2.1" },
     { name = "llm", specifier = ">=0.28" },
     { name = "llm-openrouter", specifier = ">=0.5" },
+    { name = "pyyaml", specifier = ">=6.0" },
 ]
 
 [[package]]

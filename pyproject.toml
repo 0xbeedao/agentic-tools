@@ -13,5 +13,19 @@ dependencies = [
 ]
 
 [project.scripts]
-recording-processor = "recording_recording_processor:cli"
+recording-processor = "automations.recording_processor.recording_processor:cli"
 toc-generator = "automations.toc_generator.toc_generator:main"
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+    "automations",
+    "automations.recording_processor",
+    "automations.toc_generator",
+]
