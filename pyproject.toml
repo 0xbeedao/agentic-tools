@@ -7,6 +7,7 @@ requires-python = "==3.12.12"
 dependencies = [
     "click>=8.3.1",
     "faster-whisper>=1.2.1",
+    "python-frontmatter>=1.0.0",
     "llm>=0.28",
     "llm-openrouter>=0.5",
     "pyyaml>=6.0",
@@ -15,6 +16,7 @@ dependencies = [
 [project.scripts]
 recording-processor = "automations.recording_processor.recording_processor:cli"
 toc-generator = "automations.toc_generator.toc_generator:main"
+metadata-generator = "automations.metadata_generator.metadata_generator:main"
 
 [tool.uv]
 package = true
@@ -26,6 +28,7 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = [
     "automations",
+    "automations.metadata_generator",
     "automations.recording_processor",
     "automations.toc_generator",
 ]
