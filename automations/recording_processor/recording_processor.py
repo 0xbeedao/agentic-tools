@@ -188,7 +188,9 @@ def run_recording_transcribe(args) -> int:
         _ensure_ffmpeg_available()
 
     if input_path.is_dir():
-        input_files = [path for path in input_path.rglob("*") if path.is_file()]
+        input_files = [path for path
+                       in input_path.rglob("*")
+                       if path.is_file() and path.suffix.lower() == ".mp3"]
         if not input_files:
             raise FileNotFoundError(f"No files found in directory: {input_path}")
         results = []
@@ -229,6 +231,7 @@ def _transcribe_single_file(
     output_dir: Path,
     args,
 ) -> int:
+    print(f"Transcribing: {source_path}")
     outputs = _build_output_paths(output_dir)
     if not args.overwrite:
         existing = [path for path in outputs.values() if path.exists()]
