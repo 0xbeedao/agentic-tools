@@ -737,7 +737,13 @@ def run_recording_categorize(args) -> int:
             end = _format_hhmmss(chunk.get("end"))
             chunk_id = chunk.get("id", "chunk")
             text = chunk.get("text", "").strip()
-            bullet = f"- [{chunk_id} {start}-{end}] {text}"
+            # Create relative path from output markdown to chunks.jsonl
+            try:
+                rel_path = chunks_path.relative_to(output_path.parent)
+            except ValueError:
+                rel_path = chunks_path
+            link_text = f"{chunk_id} {start}-{end}"
+            bullet = f"- {text} [{link_text}]({rel_path})"
             _append_to_markdown_section(output_path, category, bullet)
 
             if args.dedupe:

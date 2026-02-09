@@ -1,0 +1,16 @@
+{
+  "chunk_overlap": 100,
+  "chunk_tokens": 1000,
+  "created_at": "2026-02-09T14:52:51Z",
+  "device": "auto",
+  "language": "en",
+  "model": "base",
+  "outputs": {
+    "chunks": "chunks.jsonl",
+    "segments": "segments.jsonl",
+    "srt": "transcript.srt",
+    "transcript": "transcript.txt"
+  },
+  "source_hash": "sha256:8e89d557cef5359affc0956278593c0a63e9c482db2e2f87820ca9f8609f5aaa",
+  "source_path": "/home/bruce/Bak/three/My recording 2.mp3"
+}
