@@ -43,13 +43,25 @@ def _load_config(path: Path) -> dict:
 
 
 @click.group()
-def cli():
-    pass
+@click.option(
+    "--archive",
+    default=None,
+    help="Move each successfully processed input file into this directory (transcribe only)",
+)
+@click.pass_context
+def cli(ctx, archive):
+    ctx.ensure_object(dict)
+    ctx.obj["archive"] = archive
 
 
 @click.command("transcribe")
 @click.option("--input", default=None, help="Audio/video file or directory")
 @click.option("--output", default=None, help="Output directory")
+@click.option(
+    "--archive",
+    default=None,
+    help="Move each successfully processed input file into this directory",
+)
 @click.option("--whisper-model", default="base", help="Whisper model to use")
 @click.option("--language", default=None, help="Language code (e.g., en, es)")
 @click.option(
@@ -81,9 +93,12 @@ def cli():
 @click.option(
     "--check-ffmpeg", is_flag=True, default=False, help="Check if ffmpeg is available"
 )
+@click.pass_context
 def transcribe(
+    ctx,
     input,
     output,
+    archive,
     whisper_model,
     language,
     device,
@@ -99,8 +114,13 @@ def transcribe(
     if config:
         defaults = _load_config(Path(config))
 
+    group_archive = None
+    if ctx is not None and getattr(ctx, "obj", None):
+        group_archive = ctx.obj.get("archive")
+
     input = input or defaults.get("input")
     output = output or defaults.get("output")
+    archive = archive or group_archive or defaults.get("archive")
     whisper_model = whisper_model or defaults.get("whisper_model", "base")
     language = language or defaults.get("language")
     device = device or defaults.get("device", "auto")
@@ -119,6 +139,7 @@ def transcribe(
         def __init__(self):
             self.input = input
             self.output = output
+            self.archive = archive
             self.whisper_model = whisper_model
             self.language = language
             self.device = device
@@ -184,20 +205,31 @@ def run_recording_transcribe(args) -> int:
     output_root = _resolve_output_root(input_path, args.output)
     output_root.mkdir(parents=True, exist_ok=True)
 
+    archive_dir: Path | None = None
+    if getattr(args, "archive", None):
+        archive_dir = Path(args.archive).expanduser()
+        archive_dir.mkdir(parents=True, exist_ok=True)
+
     if args.check_ffmpeg:
         _ensure_ffmpeg_available()
 
     if input_path.is_dir():
-        input_files = [path for path
-                       in input_path.rglob("*")
-                       if path.is_file() and path.suffix.lower() == ".mp3"]
+        input_files = [
+            path
+            for path in input_path.rglob("*")
+            if path.is_file() and path.suffix.lower() == ".mp3"
+        ]
         if not input_files:
             raise FileNotFoundError(f"No files found in directory: {input_path}")
         results = []
         for path in sorted(input_files):
             output_dir = output_root / _get_transcription_name(path)
             output_dir.mkdir(parents=True, exist_ok=True)
-            results.append(_transcribe_single_file(path, output_dir, args))
+            code = _transcribe_single_file(path, output_dir, args)
+            results.append(code)
+            if code == 0 and archive_dir:
+                archived_to = _archive_source_file(path, archive_dir)
+                click.echo(f"Archived: {archived_to}")
         return 0 if all(code == 0 for code in results) else 1
 
     if not input_path.exists():
@@ -206,7 +238,11 @@ def run_recording_transcribe(args) -> int:
     if input_path.is_file():
         output_dir = output_root / _get_transcription_name(input_path)
         output_dir.mkdir(parents=True, exist_ok=True)
-        return _transcribe_single_file(input_path, output_dir, args)
+        code = _transcribe_single_file(input_path, output_dir, args)
+        if code == 0 and archive_dir:
+            archived_to = _archive_source_file(input_path, archive_dir)
+            click.echo(f"Archived: {archived_to}")
+        return code
 
     raise ValueError(f"Unsupported input path: {input_path}")
 
@@ -224,6 +260,25 @@ def _get_transcription_name(path: Path) -> str:
     creation_time = stat.st_mtime
     dt = datetime.datetime.fromtimestamp(creation_time)
     return f"transcription-{dt.strftime('%Y-%m-%d-%H%M%S')}"
+
+
+def _archive_source_file(source_path: Path, archive_dir: Path) -> Path:
+    if not source_path.exists():
+        raise FileNotFoundError(f"Source file not found: {source_path}")
+    if not source_path.is_file():
+        raise ValueError(f"Source path is not a file: {source_path}")
+
+    suffix = "".join(source_path.suffixes)
+    base = source_path.name[: -len(suffix)] if suffix else source_path.name
+
+    destination = archive_dir / source_path.name
+    counter = 1
+    while destination.exists():
+        destination = archive_dir / f"{base}-{counter}{suffix}"
+        counter += 1
+
+    shutil.move(str(source_path), str(destination))
+    return destination
 
 
 def _transcribe_single_file(
