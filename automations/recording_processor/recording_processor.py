@@ -48,10 +48,16 @@ def _load_config(path: Path) -> dict:
     default=None,
     help="Move each successfully processed input file into this directory (transcribe only)",
 )
+@click.option(
+    "--outputdir",
+    default=".",
+    help="Base directory for output files",
+)
 @click.pass_context
-def cli(ctx, archive):
+def cli(ctx, archive, outputdir):
     ctx.ensure_object(dict)
     ctx.obj["archive"] = archive
+    ctx.obj["outputdir"] = outputdir
 
 
 @click.command("transcribe")
@@ -93,6 +99,11 @@ def cli(ctx, archive):
 @click.option(
     "--check-ffmpeg", is_flag=True, default=False, help="Check if ffmpeg is available"
 )
+@click.option(
+    "--outputdir",
+    default=None,
+    help="Base directory for output files (overrides global --outputdir)",
+)
 @click.pass_context
 def transcribe(
     ctx,
@@ -109,18 +120,22 @@ def transcribe(
     batch_mode,
     config,
     check_ffmpeg,
+    outputdir,
 ):
     defaults = {}
     if config:
         defaults = _load_config(Path(config))
 
     group_archive = None
+    group_outputdir = None
     if ctx is not None and getattr(ctx, "obj", None):
         group_archive = ctx.obj.get("archive")
+        group_outputdir = ctx.obj.get("outputdir")
 
     input = input or defaults.get("input")
     output = output or defaults.get("output")
     archive = archive or group_archive or defaults.get("archive")
+    outputdir = outputdir or group_outputdir or defaults.get("outputdir", ".")
     whisper_model = whisper_model or defaults.get("whisper_model", "base")
     language = language or defaults.get("language")
     device = device or defaults.get("device", "auto")
@@ -139,6 +154,7 @@ def transcribe(
         def __init__(self):
             self.input = input
             self.output = output
+            self.outputdir = outputdir
             self.archive = archive
             self.whisper_model = whisper_model
             self.language = language
@@ -163,6 +179,11 @@ def transcribe(
     help="Output markdown file (default: daily-summary-YYYY-MM-DD.md)",
 )
 @click.option(
+    "--archive",
+    default=None,
+    help="Move each successfully processed transcription directory into this directory",
+)
+@click.option(
     "--categories",
     default='["Project Notes","Ideas","Todos","Journal"]',
     help="JSON array of category names",
@@ -181,15 +202,31 @@ def transcribe(
 @click.option(
     "--progress", is_flag=True, default=False, help="Show progress for long runs"
 )
-def categorize(input, output, categories, model, dedupe, progress):
+@click.option(
+    "--outputdir",
+    default=None,
+    help="Base directory for output files (overrides global --outputdir)",
+)
+@click.pass_context
+def categorize(
+    ctx, input, output, archive, categories, model, dedupe, progress, outputdir
+):
+    group_archive = None
+    group_outputdir = None
+    if ctx is not None and getattr(ctx, "obj", None):
+        group_archive = ctx.obj.get("archive")
+        group_outputdir = ctx.obj.get("outputdir")
+
     class Args:
         def __init__(self):
             self.input = input
             self.output = output
+            self.archive = archive or group_archive
             self.categories = categories
             self.model = model
             self.dedupe = dedupe
             self.progress = progress
+            self.outputdir = outputdir or group_outputdir or "."
 
     args = Args()
     result = run_recording_categorize(args)
@@ -202,7 +239,9 @@ cli.add_command(categorize)
 
 def run_recording_transcribe(args) -> int:
     input_path = Path(args.input).expanduser()
-    output_root = _resolve_output_root(input_path, args.output)
+    output_root = _resolve_output_root(
+        input_path, args.output, getattr(args, "outputdir", ".")
+    )
     output_root.mkdir(parents=True, exist_ok=True)
 
     archive_dir: Path | None = None
@@ -247,12 +286,15 @@ def run_recording_transcribe(args) -> int:
     raise ValueError(f"Unsupported input path: {input_path}")
 
 
-def _resolve_output_root(input_path: Path, output_arg: str | None) -> Path:
+def _resolve_output_root(
+    input_path: Path, output_arg: str | None, outputdir: str = "."
+) -> Path:
+    base_dir = Path(outputdir).expanduser()
     if output_arg:
-        return Path(output_arg).expanduser()
+        return base_dir / Path(output_arg).expanduser()
     if input_path.is_dir():
-        return input_path
-    return input_path.parent
+        return base_dir / input_path.name
+    return base_dir
 
 
 def _get_transcription_name(path: Path) -> str:
@@ -278,6 +320,23 @@ def _archive_source_file(source_path: Path, archive_dir: Path) -> Path:
         counter += 1
 
     shutil.move(str(source_path), str(destination))
+    return destination
+
+
+def _archive_directory(source_dir: Path, archive_dir: Path) -> Path:
+    if not source_dir.exists():
+        raise FileNotFoundError(f"Source directory not found: {source_dir}")
+    if not source_dir.is_dir():
+        raise ValueError(f"Source path is not a directory: {source_dir}")
+
+    destination = archive_dir / source_dir.name
+    counter = 1
+    original_name = source_dir.name
+    while destination.exists():
+        destination = archive_dir / f"{original_name}-{counter}"
+        counter += 1
+
+    shutil.move(str(source_dir), str(destination))
     return destination
 
 
@@ -679,12 +738,17 @@ def run_recording_categorize(args) -> int:
     else:
         raise FileNotFoundError(f"Input not found: {input_path}")
 
+    archive_dir: Path | None = None
+    if getattr(args, "archive", None):
+        archive_dir = Path(args.archive).expanduser()
+        archive_dir.mkdir(parents=True, exist_ok=True)
+
     categories = _load_categories(args.categories)
-    output_path = (
-        Path(args.output).expanduser()
-        if args.output
-        else _default_daily_summary_path(input_dir)
-    )
+    outputdir = Path(getattr(args, "outputdir", ".")).expanduser()
+    if args.output:
+        output_path = outputdir / Path(args.output).expanduser()
+    else:
+        output_path = outputdir / _default_daily_summary_path(input_dir).name
 
     try:
         import llm
@@ -752,6 +816,11 @@ def run_recording_categorize(args) -> int:
             processed += 1
             if args.progress:
                 print(f"Processed {processed}/{total}", end="\r", file=sys.stderr)
+
+        if archive_dir:
+            tx_dir = chunks_path.parent
+            archived_to = _archive_directory(tx_dir, archive_dir)
+            click.echo(f"Archived: {archived_to}")
 
     if args.progress and total > 0:
         print(" " * 30, end="\r", file=sys.stderr)
